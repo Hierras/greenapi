@@ -1,5 +1,5 @@
 import 'server-only'
-import type { GetStateInstanceResponse, SendMessageResponse, SendMessageRequest, ChatMessage, GetChatHistoryRequest, ReceiveNotificationResponse, DeleteNotificationResponse } from './types';
+import type { GetStateInstanceResponse, SendMessageResponse, SendMessageRequest, ChatMessage, GetChatHistoryRequest, ReceiveNotificationResponse, DeleteNotificationResponse, CheckAccountResponse } from './types';
 
 export class GreenApi {
     private readonly DEFAULT_URL: string;
@@ -58,6 +58,23 @@ export class GreenApi {
         return this.request<SendMessageResponse>(url, {
             method: "POST",
             body: JSON.stringify(body),
+        });
+    }
+
+    async checkAccount(phoneNumber: string | number): Promise<CheckAccountResponse> {
+        const url = this.buildFullURL("checkAccount");
+
+        const numeric = typeof phoneNumber === "number"
+            ? phoneNumber
+            : Number(phoneNumber.replace(/\D/g, ""));
+
+        if (!Number.isFinite(numeric) || numeric <= 0) {
+            throw new Error(`Invalid phoneNumber: ${phoneNumber}`);
+        }
+
+        return this.request<CheckAccountResponse>(url, {
+            method: "POST",
+            body: JSON.stringify({ phoneNumber: numeric }),
         });
     }
 

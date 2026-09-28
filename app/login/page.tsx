@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { loginAction } from "./action";
+import { useTokenRefresh } from "@/shared/hooks/useTokenRefresh";
 
 export default function LoginPage() {
   const [idInstance, setIdInstance] = useState("");
@@ -38,6 +39,8 @@ export default function LoginPage() {
       toast.error(result.message);
     }
   };
+
+  useTokenRefresh();
 
   return (
     <form

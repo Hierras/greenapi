@@ -431,3 +431,10 @@ export function isContactMessage(
 ): m is Extract<MessageData, { typeMessage: "contactMessage" }> {
   return m.typeMessage === "contactMessage";
 }
+
+export interface CheckAccountResponse {
+  exist: boolean;
+  chatId?: string;
+  avatar?: string;
+  name?: string;
+}
