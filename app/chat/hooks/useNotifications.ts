@@ -26,7 +26,6 @@ export function useNotifications(enabled: boolean) {
         const { messageData, senderData, idMessage, timestamp } = n.body;
         const { chatId, sender, phone } = senderData;
 
-        // 1. Ищем контакт: по chatId, потом по телефону
         const digits = phone?.toString() ?? sender.replace(/\D/g, "");
         const contact = contacts.findByChatIdOrPhone(chatId, digits);
 
