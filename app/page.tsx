@@ -1,4 +1,11 @@
+"use client";
+
+import { useTokenRefresh } from "@/shared/hooks/useTokenRefresh";
+
 export default function HomePage() {
+
+  useTokenRefresh();
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-zinc-50 to-zinc-100 dark:from-black dark:to-zinc-900 font-sans p-4">
       <div className="w-full max-w-md text-center">

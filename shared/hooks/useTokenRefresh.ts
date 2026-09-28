@@ -1,9 +1,10 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { refreshTokenAction } from '../actions/refreshTokenAction'
 import { DEFAULT_COOKIE_MAX_AGE, ROUTES } from '../constants'
+import logger from '../lib/logger'
 
 interface UseTokenRefreshOptions {
   checkInterval?: number
@@ -16,6 +17,7 @@ export function useTokenRefresh({
 }: UseTokenRefreshOptions = {}) {
   const isRefreshing = useRef(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!enabled) return;
@@ -28,14 +30,16 @@ export function useTokenRefresh({
         const result = await refreshTokenAction();
 
         if (result.refreshed) {
-          console.log('Token refreshed silently');
+          if (pathname !== ROUTES.CHAT) {
+            router.replace(ROUTES.CHAT);
+          }
         } else {
-          console.warn('Session expired, redirecting to /login');
+          logger.warn('Session expired, redirecting to /login');
           router.replace(ROUTES.LOGIN);
         }
       } catch (error) {
         if (process.env.NODE_ENV === 'development') {
-          console.error('Silent refresh failed:', error);
+          logger.error('Silent refresh failed:', error);
         }
       } finally {
         isRefreshing.current = false;
@@ -57,5 +61,5 @@ export function useTokenRefresh({
       clearInterval(interval)
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     }
-  }, [checkInterval, enabled, router])
+  }, [checkInterval, enabled, router, pathname])
 }

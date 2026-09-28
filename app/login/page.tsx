@@ -29,10 +29,14 @@ export default function LoginPage() {
       return;
     }
 
-    await loginAction({
+    const result = await loginAction({
       apiTokenInstance: validatedApiToken,
       idInstance: validatedIdInstance,
     });
+
+    if (result && result.error) {
+      toast.error(result.message);
+    }
   };
 
   return (
